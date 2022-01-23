@@ -18,7 +18,7 @@ runs:
   steps:
     - name: Install sign-assets binary
       shell: bash
-      run: ${{ github.action_path }}/scripts/install.sh sign-assets
+      run: ${{ github.action_path }}/../scripts/install.sh sign-assets
     - name: Sign assets
       shell: bash
       run: |
