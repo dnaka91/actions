@@ -27,7 +27,7 @@ runs:
         b2sum -c --ignore-missing /tmp/checksums.b2
 
         mkdir -p $HOME/.local/hash-assets/bin
-        tar -xzf /tmp/hash-assets-x86_64-unknown-linux-musl.tar.gz -C $HOME/.local/hash-assets/bin
+        tar -xzf /tmp/hash-assets-x86_64-unknown-linux-gnu.tar.gz -C $HOME/.local/hash-assets/bin
         rm -rf /tmp/*.{tar.gz,b2,b2.asc}
 
         echo "$HOME/.local/hash-assets/bin" >> $GITHUB_PATH
