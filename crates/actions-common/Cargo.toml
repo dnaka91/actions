@@ -1,0 +1,15 @@
+[package]
+name = "actions-common"
+version = "0.1.0"
+authors = ["Dominik Nakamura <dnaka91@gmail.com>"]
+edition = "2021"
+license = "MIT"
+
+[dependencies]
+anyhow = "1.0.53"
+attohttpc = { version = "0.18.0", default-features = false, features = ["json", "compress", "tls-rustls"] }
+clap = { version = "3.0.10", features = ["derive", "env"] }
+globset = "0.4.8"
+serde = { version = "1.0.135", features = ["derive"] }
+tracing = "0.1.29"
+tracing-subscriber = "0.3.6"
