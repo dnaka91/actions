@@ -21,9 +21,9 @@ runs:
       run: |
         cd /tmp
 
-        curl -LsSf https://github.com/dnaka91/actions/releases/download/latest/sign-assets-x86_64-unknown-linux-musl.tar.gz | tar -xf - -C /tmp
-        curl -LsSf https://github.com/dnaka91/actions/releases/download/latest/checksums.b2 > /tmp/checksums.b2
-        curl -LsSf https://github.com/dnaka91/actions/releases/download/latest/checksums.b2.asc > /tmp/checksums.b2.asc
+        curl -LsSf https://github.com/dnaka91/actions/releases/latest/download/sign-assets-x86_64-unknown-linux-musl.tar.gz | tar -xf - -C /tmp
+        curl -LsSf https://github.com/dnaka91/actions/releases/latest/download/checksums.b2 > /tmp/checksums.b2
+        curl -LsSf https://github.com/dnaka91/actions/releases/latest/download/checksums.b2.asc > /tmp/checksums.b2.asc
 
         gpg --recv-keys 24B536EEDC7D1FBCFC678E786C63F836857F5C34
         gpg --verify /tmp/checksums.b2.asc
