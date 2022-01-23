@@ -1,7 +1,7 @@
 //! Set up common tracing logs.
 
 use tracing::Level;
-use tracing_subscriber::{filter::Targets, prelude::*};
+use tracing_subscriber::{filter::Targets, fmt::time, prelude::*};
 
 /// Initialize logging of trace calls to stdout.
 ///
@@ -17,7 +17,7 @@ pub fn init(crate_name: &str) {
         .with(
             tracing_subscriber::fmt::layer()
                 .with_target(false)
-                .without_time(),
+                .with_timer(time::uptime()),
         )
         .with(
             Targets::new()
