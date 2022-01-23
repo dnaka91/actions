@@ -26,6 +26,10 @@ fn main() -> Result<()> {
 
     actions_common::tracing::init(env!("CARGO_CRATE_NAME"));
 
+    rayon::ThreadPoolBuilder::new()
+        .num_threads(8)
+        .build_global()?;
+
     let release = http::get_release(
         &opt.github.token,
         &opt.github.repository,
