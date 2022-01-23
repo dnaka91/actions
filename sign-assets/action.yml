@@ -23,7 +23,7 @@ runs:
 
         cd /tmp
 
-        curl -LsSfO https://github.com/dnaka91/actions/releases/latest/download/sign-assets-x86_64-unknown-linux-musl.tar.gz
+        curl -LsSfO https://github.com/dnaka91/actions/releases/latest/download/sign-assets-x86_64-unknown-linux-gnu.tar.gz
         curl -LsSfO https://github.com/dnaka91/actions/releases/latest/download/checksums.b2
         curl -LsSfO https://github.com/dnaka91/actions/releases/latest/download/checksums.b2.asc
 
