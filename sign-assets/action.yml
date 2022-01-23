@@ -19,9 +19,11 @@ runs:
     - name: Install sign-assets binary
       shell: bash
       run: |
+        set -euo pipefail
+
         cd /tmp
 
-        curl -LsSf https://github.com/dnaka91/actions/releases/latest/download/sign-assets-x86_64-unknown-linux-musl.tar.gz | tar -xf - -C /tmp
+        curl -LsSf https://github.com/dnaka91/actions/releases/latest/download/sign-assets-x86_64-unknown-linux-musl.tar.gz | tar -xzf - -C /tmp
         curl -LsSf https://github.com/dnaka91/actions/releases/latest/download/checksums.b2 > /tmp/checksums.b2
         curl -LsSf https://github.com/dnaka91/actions/releases/latest/download/checksums.b2.asc > /tmp/checksums.b2.asc
 
