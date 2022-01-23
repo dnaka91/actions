@@ -45,6 +45,6 @@ runs:
 
         sign-assets \
           --token ${{ inputs.token }} \
-          --gpg-key ${{ steps.store_key.outputs.key }} \
-          --gpg-passphrase %{{ inputs.gpg_passphrase }} \
+          --gpg-key $key \
+          --gpg-passphrase ${{ inputs.gpg_passphrase }} \
           ${{ inputs.globs }}
