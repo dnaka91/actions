@@ -1,5 +1,5 @@
 [package]
-name = "hash-assets"
+name = "build-assets"
 version = "1.0.0"
 authors = ["Dominik Nakamura <dnaka91@gmail.com>"]
 edition = "2021"
@@ -8,14 +8,18 @@ license = "AGPL-3.0-only"
 [dependencies]
 actions-common = { path = "../actions-common" }
 anyhow = "1.0.53"
-blake2 = "0.10.2"
-globset = "0.4.8"
-hex = "0.4.3"
-rayon = "1.5.1"
+camino = "1.0.7"
+cargo_metadata = "0.14.1"
+flate2 = "1.0.22"
+heck = "0.4.0"
 serde = { version = "1.0.136", features = ["derive"] }
 serde_with = { version = "1.11.0", default-features = false }
-sha2 = "0.10.1"
+tar = "0.4.38"
+target-lexicon = { version = "0.12.2", features = ["std"] }
+time = "0.3.6"
 tracing = "0.1.29"
+zip = { version = "0.5.13", default-features = false, features = ["deflate"] }
 
 [dev-dependencies]
 assert_fs = "1.0.7"
+time = { version = "0.3.6", features = ["macros"] }

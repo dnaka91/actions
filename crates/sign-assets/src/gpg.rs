@@ -1,7 +1,7 @@
 //! Calling GPG to manage keys and sign files.
 
 use std::{
-    io::{self, BufRead, Cursor},
+    io::{self, BufRead, Cursor, Write},
     path::{Path, PathBuf},
     process::{Command, Stdio},
 };
@@ -26,8 +26,13 @@ pub struct KeyId(String);
 
 /// Import a new key into GPG. The key must be accessible on the file system and a passphrase must
 /// be given if the key is protected, or the import will fail.
-pub fn import_key(key: &Path, passphrase: Option<&str>) -> Result<KeyId> {
+pub fn import_key(key: &str, passphrase: Option<&str>) -> Result<KeyId> {
     let gpg = find_gpg()?;
+    let key = {
+        let mut file = tempfile::NamedTempFile::new()?;
+        file.write_all(key.as_bytes())?;
+        file
+    };
 
     let mut cmd = Command::new(&gpg);
 
@@ -39,7 +44,7 @@ pub fn import_key(key: &Path, passphrase: Option<&str>) -> Result<KeyId> {
         cmd.args(["--passphrase", passphrase]);
     }
 
-    let output = cmd.arg(key).output()?;
+    let output = cmd.arg(key.path()).output()?;
 
     ensure!(
         output.status.success(),

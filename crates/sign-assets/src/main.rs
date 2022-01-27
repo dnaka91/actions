@@ -2,46 +2,44 @@
 #![deny(rust_2018_idioms, clippy::all, clippy::pedantic)]
 #![allow(clippy::missing_errors_doc)]
 
-use std::path::PathBuf;
-
 use actions_common::{
-    cli::GithubArgs,
-    glob,
+    env, glob,
     http::{self, Release},
 };
 use anyhow::{Context, Result};
-use clap::Parser;
 use rayon::prelude::*;
+use serde::Deserialize;
+use serde_with::{rust as de, CommaSeparator};
 use sign_assets::gpg;
 use tracing::info;
 
-#[derive(Parser)]
+#[derive(Deserialize)]
 struct Opt {
-    #[clap(long)]
-    gpg_key: PathBuf,
-    #[clap(long)]
+    gpg_key: String,
     gpg_passphrase: Option<String>,
-    #[clap(flatten)]
-    github: GithubArgs,
-    #[clap(default_values = &["*.{b2,sha256,sha512}"])]
+    #[serde(
+        default = "default_globs",
+        with = "de::StringWithSeparator::<CommaSeparator>"
+    )]
     globs: Vec<String>,
 }
 
-fn main() -> Result<()> {
-    let opt = Opt::parse();
+fn default_globs() -> Vec<String> {
+    vec!["*.{b2,sha256,sha512}".to_owned()]
+}
 
+fn main() -> Result<()> {
     actions_common::tracing::init(env!("CARGO_CRATE_NAME"));
+
+    let opt = env::input::<Opt>()?;
+    let github = env::github()?;
 
     rayon::ThreadPoolBuilder::new()
         .num_threads(8)
         .build_global()?;
 
-    let release = http::get_release(
-        &opt.github.token,
-        &opt.github.repository,
-        &opt.github.ref_name,
-    )
-    .context("failed getting release info")?;
+    let release = http::get_release(&github.token, &github.repository, &github.ref_name)
+        .context("failed getting release info")?;
 
     let globset = glob::build_globset(&opt.globs)?;
     let assets = release
@@ -50,7 +48,7 @@ fn main() -> Result<()> {
         .filter_map(|asset| {
             globset
                 .is_match(&asset.name)
-                .then(|| http::download_asset(&opt.github.token, asset).map(|r| (asset, r)))
+                .then(|| http::download_asset(&github.token, asset).map(|r| (asset, r)))
         })
         .collect::<Result<Vec<_>>>()
         .context("failed downloading assets")?;
@@ -60,12 +58,7 @@ fn main() -> Result<()> {
 
     gpg::delete_key(&key_id)?;
 
-    upload_files(
-        &opt.github.token,
-        &opt.github.repository,
-        &release,
-        &signatures?,
-    )?;
+    upload_files(&github.token, &github.repository, &release, &signatures?)?;
 
     Ok(())
 }

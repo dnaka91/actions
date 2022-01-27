@@ -3,7 +3,7 @@
 use std::io::{self, Read};
 
 use anyhow::Result;
-use attohttpc::ResponseReader;
+use attohttpc::{ResponseReader, body};
 use serde::Deserialize;
 
 /// Information about a specific release on GitHub.
@@ -87,7 +87,7 @@ pub fn upload_asset(
     .bearer_auth(token)
     .header("Accept", "application/vnd.github.v3+json")
     .header("Content-Type", "text/plain")
-    .body(attohttpc::body::Bytes(file))
+    .body(body::Bytes(file))
     .send()?
     .error_for_status()?;
 

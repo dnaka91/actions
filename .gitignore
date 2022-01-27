@@ -1,1 +1,5 @@
 /target
+
+*.asc
+*.tar.gz
+*.zip

@@ -3,39 +3,41 @@
 #![allow(clippy::missing_errors_doc)]
 
 use actions_common::{
-    cli::GithubArgs,
-    glob,
+    env, glob,
     http::{self, Release},
 };
 use anyhow::{Context, Result};
-use clap::Parser;
 use hash_assets::hashing;
 use rayon::prelude::*;
+use serde::Deserialize;
+use serde_with::{rust as de, CommaSeparator};
 use tracing::info;
 
-#[derive(Parser)]
+#[derive(Deserialize)]
 struct Opt {
-    #[clap(flatten)]
-    github: GithubArgs,
-    #[clap(default_values = &["*.tar.gz", "*.zip"])]
+    #[serde(
+        default = "default_globs",
+        with = "de::StringWithSeparator::<CommaSeparator>"
+    )]
     globs: Vec<String>,
 }
 
-fn main() -> Result<()> {
-    let opt = Opt::parse();
+fn default_globs() -> Vec<String> {
+    vec!["*.tar.gz".to_owned(), "*.zip".to_owned()]
+}
 
+fn main() -> Result<()> {
     actions_common::tracing::init(env!("CARGO_CRATE_NAME"));
+
+    let opt = env::input::<Opt>()?;
+    let github = env::github()?;
 
     rayon::ThreadPoolBuilder::new()
         .num_threads(8)
         .build_global()?;
 
-    let release = http::get_release(
-        &opt.github.token,
-        &opt.github.repository,
-        &opt.github.ref_name,
-    )
-    .context("failed getting release info")?;
+    let release = http::get_release(&github.token, &github.repository, &github.ref_name)
+        .context("failed getting release info")?;
 
     let globset = glob::build_globset(&opt.globs)?;
     let assets = release
@@ -44,14 +46,14 @@ fn main() -> Result<()> {
         .filter_map(|asset| {
             globset
                 .is_match(&asset.name)
-                .then(|| http::download_asset(&opt.github.token, asset).map(|r| (asset, r)))
+                .then(|| http::download_asset(&github.token, asset).map(|r| (asset, r)))
         })
         .collect::<Result<Vec<_>>>()
         .context("failed downloading assets")?;
 
     let hashes = hashing::hash(assets).context("failed hashing assets")?;
 
-    upload_files(&opt.github.token, &opt.github.repository, &release, &hashes)?;
+    upload_files(&github.token, &github.repository, &release, &hashes)?;
 
     Ok(())
 }

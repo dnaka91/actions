@@ -5,6 +5,7 @@ allow = [
 ]
 allow-osi-fsf-free = "both"
 exceptions = [
+    { allow = ["AGPL-3.0"], name = "build-assets", version = "*" },
     { allow = ["AGPL-3.0"], name = "hash-assets", version = "*" },
     { allow = ["AGPL-3.0"], name = "sign-assets", version = "*" },
 ]
