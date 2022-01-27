@@ -52,7 +52,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Create checksums
-        run: b2sum -b *.tar.gz > checksums.b2
+        run: b2sum -b *.{tar.gz,zip} > checksums.b2
       - name: Import GPG key
         uses: crazy-max/ghaction-import-gpg@v4
         with:
