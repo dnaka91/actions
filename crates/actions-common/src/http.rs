@@ -3,7 +3,7 @@
 use std::io::{self, Read};
 
 use anyhow::Result;
-use attohttpc::{ResponseReader, body};
+use attohttpc::{body, ResponseReader};
 use serde::Deserialize;
 
 /// Information about a specific release on GitHub.

@@ -1,16 +1,11 @@
-use std::fs::File;
-use std::io::Cursor;
+use std::{fs::File, io::Cursor};
 
 use anyhow::Result;
 use camino::Utf8Path;
-use flate2::write::GzEncoder;
-use flate2::Compression;
-use tar::Builder as TarBuilder;
-use tar::Header as TarHeader;
+use flate2::{write::GzEncoder, Compression};
+use tar::{Builder as TarBuilder, Header as TarHeader};
 use target_lexicon::Triple;
-use zip::write::FileOptions as ZipFileOptions;
-use zip::CompressionMethod;
-use zip::ZipWriter;
+use zip::{write::FileOptions as ZipFileOptions, CompressionMethod, ZipWriter};
 
 pub fn tar_gz(file: &Utf8Path, name: &str, target: &Triple) -> Result<(String, Vec<u8>)> {
     let archive_name = format!("{name}-{target}.tar.gz");

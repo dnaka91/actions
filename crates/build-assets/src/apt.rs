@@ -1,6 +1,7 @@
 use std::{
+    collections::HashSet,
     io::{BufRead, Cursor},
-    process::Command, collections::HashSet,
+    process::Command,
 };
 
 use anyhow::{ensure, Result};
