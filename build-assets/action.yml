@@ -21,7 +21,7 @@ runs:
   steps:
     - name: Install build-assets binary
       shell: bash
-      run: ${{ github.action_path }}/../scripts/install.sh build-assets
+      run: '"${{ github.action_path }}"/../scripts/wrapper.sh build-assets'
     - name: Build assets
       shell: bash
       run: build-assets

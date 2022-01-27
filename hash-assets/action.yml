@@ -12,7 +12,7 @@ runs:
   steps:
     - name: Install hash-assets binary
       shell: bash
-      run: ${{ github.action_path }}/../scripts/install.sh hash-assets
+      run: '"${{ github.action_path }}"/../scripts/wrapper.sh hash-assets'
     - name: Hash assets
       shell: bash
       run: hash-assets
