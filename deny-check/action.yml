@@ -1,0 +1,27 @@
+name: "Build Assets"
+description: "Compile Rust binaries and attach them to the release"
+inputs:
+  checks:
+    description: "The cargo-deny checks to perform"
+    required: true
+  arguments:
+    description: "Arguments to pass on to cargo-deny"
+    required: false
+    default: --all-features
+  version:
+    description: "Version of cargo-deny to use"
+    required: false
+    default: 0.11.3
+runs:
+  using: composite
+  steps:
+    - name: Install cargo-deny binary
+      shell: bash
+      run: '"${{ github.action_path }}"/wrapper.sh cargo-deny ${{ inputs.version }}'
+    - name: Fetch advisories data
+      shell: bash
+      if: ${{ contains(inputs.checks, 'advisories') }}
+      run: cargo-deny fetch
+    - name: Run cargo-deny
+      shell: bash
+      run: cargo-deny ${{ inputs.arguments }} check ${{ inputs.checks }}
