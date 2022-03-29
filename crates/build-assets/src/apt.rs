@@ -8,7 +8,12 @@ use anyhow::{ensure, Result};
 
 pub fn list_packages() -> Result<HashSet<String>> {
     let output = Command::new("sudo")
-        .args(["apt-cache", "pkgnames"])
+        .args([
+            "dpkg-query",
+            "--show",
+            "--showformat",
+            "${binary:Package}\n",
+        ])
         .output()?;
     ensure!(
         output.status.success(),

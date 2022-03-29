@@ -33,7 +33,9 @@ fn main() -> Result<()> {
         let installed_pkgs = apt::list_packages()?;
         info!("checked for installed APT packages");
 
-        if !installed_pkgs.contains(pkg) {
+        if installed_pkgs.contains(pkg) {
+            info!(%pkg, "required APT packages already installed");
+        } else {
             apt::update()?;
             info!("updated APT cache");
 
