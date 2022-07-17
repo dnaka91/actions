@@ -33,9 +33,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
       - name: Setup Rust
-        uses: taiki-e/github-actions/install-rust@main
-        with:
-          toolchain: stable
+        uses: dtolnay/rust-toolchain@stable
       - name: Build and upload asset
         uses: taiki-e/upload-rust-binary-action@v1
         with:
