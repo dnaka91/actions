@@ -75,11 +75,11 @@ impl<'a> CargoBuilder<'a> {
                         binary = binary.or(Some(bin));
                     }
                 }
-                Message::CompilerMessage(message) => println!("{}", message),
+                Message::CompilerMessage(message) => println!("{message}"),
                 Message::BuildFinished(build) => {
                     ensure!(build.success, "cargo build failed");
                 }
-                Message::TextLine(line) => println!("{}", line),
+                Message::TextLine(line) => println!("{line}"),
                 _ => {}
             }
         }

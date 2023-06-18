@@ -10,15 +10,14 @@ use anyhow::{Context, Result};
 use hash_assets::hashing;
 use rayon::prelude::*;
 use serde::Deserialize;
-use serde_with::{rust as de, CommaSeparator};
+use serde_with::{formats::CommaSeparator, serde_as, StringWithSeparator};
 use tracing::info;
 
+#[serde_as]
 #[derive(Deserialize)]
 struct Opt {
-    #[serde(
-        default = "default_globs",
-        with = "de::StringWithSeparator::<CommaSeparator>"
-    )]
+    #[serde_as(as = "StringWithSeparator::<CommaSeparator, String>")]
+    #[serde(default = "default_globs")]
     globs: Vec<String>,
 }
 

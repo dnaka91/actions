@@ -48,8 +48,7 @@ impl Read for AssetReader {
 /// Get information about a release on GitHub, identified by its Git tag.
 pub fn get_release(token: &str, repo: &str, tag: &str) -> Result<Release> {
     attohttpc::get(format!(
-        "https://api.github.com/repos/{}/releases/tags/{}",
-        repo, tag
+        "https://api.github.com/repos/{repo}/releases/tags/{tag}"
     ))
     .bearer_auth(token)
     .header("Accept", "application/vnd.github.v3+json")

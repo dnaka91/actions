@@ -34,7 +34,7 @@ pub fn import_key(key: &str, passphrase: Option<&str>) -> Result<KeyId> {
         file
     };
 
-    let mut cmd = Command::new(&gpg);
+    let mut cmd = Command::new(gpg);
 
     cmd.arg("--import")
         .args(DEFAULT_ARGS)
@@ -69,7 +69,7 @@ pub fn import_key(key: &str, passphrase: Option<&str>) -> Result<KeyId> {
 pub fn delete_key(key_id: &KeyId) -> Result<()> {
     let gpg = find_gpg()?;
 
-    let output = Command::new(&gpg)
+    let output = Command::new(gpg)
         .arg("--delete-secret-keys")
         .args(DEFAULT_ARGS)
         .arg(&key_id.0)
@@ -82,7 +82,7 @@ pub fn delete_key(key_id: &KeyId) -> Result<()> {
     );
     info!(id = %key_id.0, "deleted secret GPG key");
 
-    let output = Command::new(&gpg)
+    let output = Command::new(gpg)
         .arg("--delete-keys")
         .args(DEFAULT_ARGS)
         .arg(&key_id.0)
@@ -113,7 +113,7 @@ pub fn sign(
     files
         .into_par_iter()
         .map(|(asset, mut reader)| {
-            let mut cmd = Command::new(&gpg);
+            let mut cmd = Command::new(gpg);
             cmd.stdin(Stdio::piped())
                 .stdout(Stdio::piped())
                 .stderr(Stdio::piped());

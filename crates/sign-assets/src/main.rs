@@ -9,18 +9,17 @@ use actions_common::{
 use anyhow::{Context, Result};
 use rayon::prelude::*;
 use serde::Deserialize;
-use serde_with::{rust as de, CommaSeparator};
+use serde_with::{formats::CommaSeparator, serde_as, StringWithSeparator};
 use sign_assets::gpg;
 use tracing::info;
 
+#[serde_as]
 #[derive(Deserialize)]
 struct Opt {
     gpg_key: String,
     gpg_passphrase: Option<String>,
-    #[serde(
-        default = "default_globs",
-        with = "de::StringWithSeparator::<CommaSeparator>"
-    )]
+    #[serde_as(as = "StringWithSeparator::<CommaSeparator, String>")]
+    #[serde(default = "default_globs")]
     globs: Vec<String>,
 }
 

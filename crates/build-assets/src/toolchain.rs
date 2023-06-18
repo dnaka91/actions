@@ -141,7 +141,7 @@ fn maybe_date(s: &str) -> bool {
 }
 
 fn is_digit(b: &[u8]) -> bool {
-    b.iter().all(|b| (b'0'..=b'9').contains(b))
+    b.iter().all(u8::is_ascii_digit)
 }
 
 #[derive(Debug, PartialEq, Eq)]

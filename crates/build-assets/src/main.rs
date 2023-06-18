@@ -8,17 +8,21 @@ use build_assets::{
     apt, archive, cargo::CargoBuilder, rustup, toolchain::Toolchain, triple::TripleExt,
 };
 use serde::Deserialize;
-use serde_with::{rust as de, CommaSeparator};
+use serde_with::{formats::CommaSeparator, serde_as, DisplayFromStr, StringWithSeparator};
 use target_lexicon::Triple;
 use tracing::info;
 
+#[serde_as]
 #[derive(Deserialize)]
 struct Opt {
-    #[serde(default, with = "de::display_fromstr")]
+    #[serde_as(as = "DisplayFromStr")]
+    #[serde(default)]
     toolchain: Toolchain,
-    #[serde(default = "Triple::host", with = "de::display_fromstr")]
+    #[serde_as(as = "DisplayFromStr")]
+    #[serde(default = "Triple::host")]
     target: Triple,
-    #[serde(default, with = "de::StringWithSeparator::<CommaSeparator>")]
+    #[serde_as(as = "StringWithSeparator::<CommaSeparator, String>")]
+    #[serde(default)]
     features: Vec<String>,
     bin: String,
 }
