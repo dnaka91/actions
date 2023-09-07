@@ -3,7 +3,6 @@
 use std::io::{self, Read};
 
 use anyhow::Result;
-use attohttpc::{body, ResponseReader};
 use serde::Deserialize;
 
 /// Information about a specific release on GitHub.
@@ -37,7 +36,7 @@ pub struct Asset {
 pub struct AssetId(u64);
 
 /// Content reader for a single [`Asset`].
-pub struct AssetReader(ResponseReader);
+pub struct AssetReader(Box<dyn Read + Send + Sync>);
 
 impl Read for AssetReader {
     fn read(&mut self, buf: &mut [u8]) -> io::Result<usize> {
@@ -47,26 +46,22 @@ impl Read for AssetReader {
 
 /// Get information about a release on GitHub, identified by its Git tag.
 pub fn get_release(token: &str, repo: &str, tag: &str) -> Result<Release> {
-    attohttpc::get(format!(
+    ureq::get(&format!(
         "https://api.github.com/repos/{repo}/releases/tags/{tag}"
     ))
-    .bearer_auth(token)
-    .header("Accept", "application/vnd.github.v3+json")
-    .send()?
-    .error_for_status()?
-    .json()
+    .set("Authorization", &format!("Bearer {token}"))
+    .set("Accept", "application/vnd.github.v3+json")
+    .call()?
+    .into_json()
     .map_err(Into::into)
 }
 
 /// Open a release asset for download.
 pub fn download_asset(token: &str, asset: &Asset) -> Result<AssetReader> {
-    let resp = attohttpc::get(&asset.browser_download_url)
-        .bearer_auth(token)
-        .follow_redirects(true)
-        .send()?
-        .error_for_status()?;
-
-    let (_, _, reader) = resp.split();
+    let reader = ureq::get(&asset.browser_download_url)
+        .set("Authorization", &format!("Bearer {token}"))
+        .call()?
+        .into_reader();
 
     Ok(AssetReader(reader))
 }
@@ -79,30 +74,27 @@ pub fn upload_asset(
     name: &str,
     file: &[u8],
 ) -> Result<()> {
-    attohttpc::post(format!(
+    ureq::post(&format!(
         "https://uploads.github.com/repos/{}/releases/{}/assets?name={}",
         repo, release.0, name
     ))
-    .bearer_auth(token)
-    .header("Accept", "application/vnd.github.v3+json")
-    .header("Content-Type", "text/plain")
-    .body(body::Bytes(file))
-    .send()?
-    .error_for_status()?;
+    .set("Authorization", &format!("Bearer {token}"))
+    .set("Accept", "application/vnd.github.v3+json")
+    .set("Content-Type", "text/plain")
+    .send_bytes(file)?;
 
     Ok(())
 }
 
 /// Delete an already existing asset from a release.
 pub fn delete_asset(token: &str, repo: &str, asset: AssetId) -> Result<()> {
-    attohttpc::delete(format!(
+    ureq::delete(&format!(
         "https://api.github.com/repos/{}/releases/assets/{}",
         repo, asset.0
     ))
-    .bearer_auth(token)
-    .header("Accept", "application/vnd.github.v3+json")
-    .send()?
-    .error_for_status()?;
+    .set("Authorization", &format!("Bearer {token}"))
+    .set("Accept", "application/vnd.github.v3+json")
+    .call()?;
 
     Ok(())
 }

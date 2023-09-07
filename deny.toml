@@ -22,4 +22,5 @@ license-files = [
 [bans]
 skip = [
     { name = "bitflags", version = "1" },
+    { name = "rustls-webpki", version = "0.100" },
 ]
