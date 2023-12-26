@@ -2,7 +2,7 @@ name: "Sign Assets"
 description: "Create signatures of release assets and attach them to the release"
 inputs:
   token:
-    description: "Token to authenticate against the GitHub API (ususally 'secrets.GITHUB_TOKEN')"
+    description: "Token to authenticate against the GitHub API (usually 'secrets.GITHUB_TOKEN')"
     required: true
   gpg_key:
     description: "The key to import and sign assets with"
