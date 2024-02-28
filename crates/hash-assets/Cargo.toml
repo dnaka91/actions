@@ -8,15 +8,15 @@ publish = false
 
 [dependencies]
 actions-common = { path = "../actions-common" }
-anyhow = "1.0.75"
+anyhow = "1.0.80"
 blake2 = "0.10.6"
-globset = "0.4.13"
+globset = "0.4.14"
 hex = "0.4.3"
-rayon = "1.7.0"
-serde = { version = "1.0.188", features = ["derive"] }
-serde_with = "3.3.0"
-sha2 = "0.10.7"
-tracing = "0.1.37"
+rayon = "1.9.0"
+serde = { version = "1.0.197", features = ["derive"] }
+serde_with = "3.6.1"
+sha2 = "0.10.8"
+tracing = "0.1.40"
 
 [dev-dependencies]
-assert_fs = "1.0.13"
+assert_fs = "1.1.1"

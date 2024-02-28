@@ -1,9 +1,13 @@
 [licenses]
 allow = [
+	"Apache-2.0",
+	"Apache-2.0 WITH LLVM-exception",
+	"BSD-3-Clause",
+	"ISC",
+	"MIT",
     "MPL-2.0",
     "OpenSSL",
 ]
-allow-osi-fsf-free = "both"
 exceptions = [
     { allow = ["Unicode-DFS-2016"], name = "unicode-ident" },
 ]
@@ -22,5 +26,4 @@ license-files = [
 [bans]
 skip = [
     { name = "bitflags", version = "1" },
-    { name = "rustls-webpki", version = "0.100" },
 ]
